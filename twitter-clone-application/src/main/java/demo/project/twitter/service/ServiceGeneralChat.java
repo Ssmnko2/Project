@@ -49,15 +49,7 @@ public class ServiceGeneralChat implements FunctionAbstract<GeneralChat> {
     }
 
     public List<User> getListChat(Long listChatId) {
-
-
         return repoUser.getListChat(listChatId);
-
-
-
-
-//        return null;
-
     }
 
     public boolean existsChatInGeneralChat(Long chatId, Long generalChatId) {

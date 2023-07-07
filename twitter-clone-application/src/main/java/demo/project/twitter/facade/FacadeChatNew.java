@@ -34,69 +34,20 @@ public class FacadeChatNew {
 
 
     public ChatNew getChatByUser(Long userInit, Long userReciv) {
-log.info("::::::::::: start1*****");
         List<ChatNew> listChatInit = service.getChatByUser(userInit, userReciv);
         List<ChatNew> listChatReciv = service.getChatByUser(userReciv, userInit);
-        log.info(":::::: chatInit = " + listChatInit.size());
-        log.info(":::::: chatRec = " + listChatReciv.size());
-        log.info("::::::::::: start2");
         ChatNew newChat;
         if ((listChatInit.size() == 0) && (listChatReciv.size() == 0)){
 
             User userIn = serviceUser.findById(userInit);
             User userRe = serviceUser.findById(userReciv);
-            log.info(":::::::: userIn = " + userIn.getId());
-            log.info(":::::::: userRe = " + userRe.getId());
-            log.info("::::::::::: start2.1");
-            log.info(":::::: userChatIni = " + userIn.getUserChats().size());
-            log.info("::::::::::: start2.2");
-            log.info(":::::: userChatRes = " + userRe.getUserChats().size());
-            log.info("::::::::::: start3");
             ChatNew chat = new ChatNew(userIn.getId(), userRe);
-
             newChat = service.saveOne(chat);
-
-
-            log.info("::::::::::: start3.1");
             userRe.getUserChatsNew().add(newChat);
-//            userIn.getUserChats().add(chat);
-            log.info("!!!!!!!!!!!!!!!!!! userReChat = " + userRe.getUserChatsNew().size());
-            log.info("::::::::::: start4");
+            serviceUser.saveUser(userRe);
 
-            log.info("::::::::::: start5");
-            User u1 = serviceUser.saveUser(userRe);
-            log.info("::::::::::: start5.1");
-            Long u1Id = u1.getId();
-            log.info("::::::::::: start5.2");
-            log.info("!!!!!!!!!!!!!!!!!! userReChat = " + u1.getUserChatsNew().size());
-            log.info("!!!!!!!!!!!!!!!!!! userID     = " + u1.getId());
-            log.info("::::::::::: start6");
-            User u2 = serviceUser.findById(u1.getId());
-                        log.info("!!!!!!!!!!!!!!!!!! userID     = " + u2.getId());
-            log.info("!!!!!!!!!!!!!!!!!! userReChat = " + u2.getUserChatsNew().size());
-            log.info("::::::::::: start6.1");
-          /*  log.info("::::::::::: start4");
-            log.info("::::::::::::::::::userRe.getUserChats().size() = "+ userRe.getUserChats().size());
-            log.info(":::::::::: newChat = " + newChat.getId());
-            log.info(":::::::::: newChat = " + newChat.getInitiator().getId());
-            log.info(":::::::::: newChat = " + newChat.getUsers().size());
-            userRe.getUserChats().add(newChat);
-
-
-            log.info("::::::::::: start5");
-            serviceUser.saveUser1(userRe);*/
-            log.info("::::::::::: start6");
         } else {
-            log.info("::::::::::: start7");
             newChat = (listChatInit.size() == 0) ? listChatReciv.get(0) : listChatInit.get(0);
-            User userIn = serviceUser.findById(userInit);
-            User userRe = serviceUser.findById(userReciv);
-            log.info("!!!!!!!!!!!!!!!!!! userIN     = " + userIn.getId());
-            log.info("!!!!!!!!!!!!!!!!!! userRE     = " + userRe.getId());
-            log.info("::::::::::: start7.1");
-            log.info("!!!!!!!!!!!!!!!!!! userInChat = " + userIn.getUserChatsNew().size());
-            log.info("!!!!!!!!!!!!!!!!!! userReChat = " + userRe.getUserChatsNew().size());
-            log.info("::::::::::: start8");
         }
 
 
@@ -163,32 +114,19 @@ log.info("::::::::::: start1*****");
     public void delChat(Long chatId, Long profileId) {
         ChatNew chat = getChatById(chatId);
         if (chat.getInitiatorId() == profileId){
-            log.info("::::: star0");
             serviceMessage.delMessageByChatId(chatId);
-log.info("::::: star1");
-log.info(":::::::: chatId = " + chat.getId());
-           User userReceiver = serviceUser.getUserReceiverFromChat(chatId).get(0);
-           log.info("::::::::: userID = " + userReceiver.getId());
-            log.info("::::: star2");
-
+            User userReceiver = serviceUser.getUserReceiverFromChat(chatId).get(0);
             userReceiver.getUserChatsNew().remove(chat);
-            log.info("::::: star2.1");
             GeneralChat generalChat = serviceGeneralChat.getListChatByUserId(userReceiver.getId()).get(0);
             generalChat.getListChat().remove(chat);
-
-            log.info("::::: star3");
             serviceUser.saveUser(userReceiver);
-            log.info("::::: star4");
 
         }
-        else {
 
-
-        }
         GeneralChat generalChat = serviceGeneralChat.getListChatByUserId(profileId).get(0);
         generalChat.getListChat().remove(chat);
         serviceGeneralChat.saveOne(generalChat);
-        log.info("::::: star5");
+
 
         if (chat.getInitiatorId() == profileId) service.deleteById(chatId);
     }

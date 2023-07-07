@@ -39,9 +39,7 @@ public class ServiceMessage implements FunctionAbstract<Message> {
         return null;
     }
 
-//    public List<Message> getAllByChatId(Long chatId) {
-//        return repo.getAllByChatId(chatId);
-//    }
+
 
     public void deleteById(Long id) {
         repo.deleteById(id);

@@ -103,10 +103,7 @@ public class ServiceTweet implements FunctionAbstract<Tweet> {
 
 
 
-    /*public List<Tweet> getTweetByWord(String s) {
-        return repo.getTweetByWord(s);
 
-    }*/
 
     public List<Tweet> getTweetByWord(String ddd) {
         return repo.getTweetByWord(ddd);
