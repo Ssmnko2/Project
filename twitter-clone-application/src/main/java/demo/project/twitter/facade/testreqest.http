@@ -1,0 +1,104 @@
+####
+POST http://localhost:8080/tweets/tweet/save
+Content-Type: application/json
+
+
+{
+  "tweetBody": "создание твита versionNext",
+  "user_id": 20,
+  "parentTweet": 0
+}
+####
+
+POST http://localhost:8080/api/v1/tweets/quote/save
+Content-Type: application/json
+
+
+{
+  "tweetBody": "создание ретвита versionNext",
+  "user_id": 20,
+  "parent_Tweet": 32
+}
+###
+GET http://localhost:8080/tweets/image/57
+
+###
+GET http://localhost:5050/tweets/alluser
+
+###
+GET http://localhost:5050/tweets/searchusers?search_requеst=п
+
+###
+GET http://localhost:5050/api/v1/tweets/tweetsearch?search_requеst=шла собака по
+
+
+
+
+###
+GET http://localhost:5050/api/v1/tweets/tweet/branch/10
+
+
+###
+GET http://localhost:5050/api/v1/tweets/tweet/all/10?sizePage=10&numberPage=0
+
+###
+GET http://localhost:5050/api/v1/tweets/tweet/all/profile?sizePage=10&numberPage=0
+
+###
+GET http://localhost:5050/api/v1/tweets/tweet/all?sizePage=10&numberPage=0
+
+###
+GET http://localhost:5050/api/v1/tweets/tweet/all/notauth
+
+###
+GET http://localhost:5050/api/v1/tweets/bookmark?sizePage=10&numberPage=0
+
+###
+GET http://localhost:5050/tweets/reply/all/1?sizePage=10&numberPage=0
+
+###
+POST http://localhost:8080/tweets/reply/save
+Content-Type: application/json
+
+
+{
+  "tweetBody": "создание коммента versionNext",
+  "user_id": 20,
+  "parent_Tweet": 48
+}
+
+###
+POST http://localhost:5050/api/v1/tweets/tweet/view?profileId=11
+Content-Type: application/json
+
+
+{
+"arrTweetId": [163, 164, 165, 166, 167, 168, 169]
+
+}
+
+
+###
+
+GET http://localhost:5050/api/v1/tweets/tweet/169
+
+###
+
+POST http://localhost:5050/api/v1/tweets/bookmark/47
+
+###
+
+POST http://localhost:5050/api/v1/tweets/like/6
+
+###
+
+POST http://localhost:5050/api/v1/tweets/retweet/26
+
+
+
+####
+
+DELETE http://localhost:8080/test/remove/38
+
+####
+DELETE http://localhost:8080/test/remove/all
