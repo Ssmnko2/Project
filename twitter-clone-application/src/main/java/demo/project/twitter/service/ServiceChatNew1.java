@@ -60,13 +60,7 @@ public class ServiceChatNew1 implements FunctionAbstract<ChatNew> {
     }
 
     public List<ChatNew> getChatByUser(Long userInit, Long userReciv) {
-
-        log.info("::::::::: user init = " + userInit);
-        log.info("::::::::: user reciv = " + userReciv);
-
         List<ChatNew> listChat = repo.getChatByUser(userInit, userReciv);
-        log.info(":::::: service = " + listChat.size());
-
         return listChat;
     }
 

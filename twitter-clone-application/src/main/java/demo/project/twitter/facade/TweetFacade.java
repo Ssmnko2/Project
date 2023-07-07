@@ -61,7 +61,6 @@ public class TweetFacade {
             int[] count = new int[1];
             count[0] = 1;
 
-            /* listPhoto.stream().map(p -> getStringUrlByPhoto(p, count[0]++), newTweet).*/
             listString = listPhoto.stream().map(f -> {
                 try {
                     return photo.getPhotoUrlNew1(f, count[0]++, tweet).get();
@@ -134,8 +133,7 @@ public class TweetFacade {
 
     private DtoTweet transEntityToDto(Tweet entity, Long profileId, int count) {
 
-      /*  if ((entity.getTweetType() == TweetType.QUOTE_TWEET) &&
-                (entity.getTweetBody() == null)) entity = entity.getParentTweet();*/
+
 
         DtoTweet dto = new DtoTweet();
         mapper.map().map(entity.getUser(), dto);
@@ -205,36 +203,15 @@ public class TweetFacade {
             transListPhotoToListUrl(listPhoto, newTweet).
                     stream().forEach(s -> serviceImage.saveOne(new AttachmentImage(s, newTweet)));
         }
-
-
-      /*  if (tt != TweetType.REPLY) {
-            Arrays.stream(newTweet.getTweetBody().split(" ")).
-                    map(s -> newString(s).toLowerCase()).
-                    filter(s -> !s.equals("")).
-                    forEach(s -> saveWord(s, newTweet));
-        }*/
-
         return newTweet.getId();
-
     }
-
-   /* private Optional<String> getStringUrlByPhoto(MultipartFile p, int count, Tweet tweet) throws Exception{
-        StringBuilder folderName = new StringBuilder();
-        folderName.append("userId").append(tweet.getUser().getId());
-        StringBuilder photoName = new StringBuilder();
-        photoName.append(tweet.getTweetType()).append(tweet.getId()).append("photo").append(count);
-        return photo.getPhotoUrlNew(p,folderName.toString(),photoName.toString());
-
-    }*/
 
     public Page<Tweet> getAll(Integer sizePage, Integer numberPage) {
         return service.findAll(sizePage, numberPage);
     }
 
-
     public DtoTweetPage getAllTweetById(Long id, Integer sizePage, Integer numberPage, int key, Long profileId) {
         Page<Tweet> pTweet = service.getAllTweetById(id, sizePage, numberPage, key, profileId);
-
 
         List<DtoTweet> list = pTweet.
                 stream().
@@ -242,53 +219,12 @@ public class TweetFacade {
                 map(y -> transListTweetInDto(y, profileId)).
                 collect(Collectors.toList());
 
-
-
         DtoTweetPage dtp = new DtoTweetPage();
         dtp.setListDto(list);
         dtp.setTotalElements(pTweet.getTotalElements());
         dtp.setTotalPage(pTweet.getTotalPages());
         return dtp;
     }
-
-
-    /*public DtoTweet getTweetById(Long id) {
-        Tweet entity = service.getById(id).get();
-        DtoTweet dto = transEntityToDto(entity);
-        Integer countReplay = service.countTweets(entity.getId(), "REPLY");
-        Integer countRetweet = service.countTweets(entity.getId(), "QUOTE_TWEET");
-        log.info(":::::::::end");
-        log.info(countRetweet);
-        log.info(countReplay);
-        dto.setCountReplay(countReplay);
-        dto.setCountRetweet(countRetweet);
-        dto.setType(entity.getTweetType().getType());
-
-
-        return dto;
-
-    }*/
-    /*public List<List<DtoTweet>> getTweetByIdAndReply(Long id){
-        List<List<DtoTweet>> list = new ArrayList<>();
-        list.add(getSingleTweetById(id));
-        return list;
-    }*/
-    /*private List<DtoTweet> getSingleTweetById(List<DtoTweet> list, Long id) {
-        List<Tweet> listTweet = service.getSingleBranch(id);
-        if (listTweet.size() == 0);
-        else {
-            list.add(transEntityToDto(listTweet.get(0)));
-            id = listTweet.get(0).getId();
-            getSingleTweetById(list, id);
-        }
-        return list;
-    }
-    public List<DtoTweet> getSingleTweetById(Long id) {
-        List<DtoTweet> list = new ArrayList<>();
-        list.add(transEntityToDto(service.getTweetById(id)));
-        return getSingleTweetById(list, id);
-    }*/
-
 
     private List<Tweet> getSingleTweetById1(List<Tweet> list, Long id) {
         List<Tweet> listTweet = service.getSingleBranch(id);
@@ -311,8 +247,6 @@ public class TweetFacade {
             newTweet = newTweet.getParentTweet();
             newId = newTweet.getId();
         }
-        /*Tweet t = service.getTweetById(id);*/
-
         list.add(newTweet);
         return getSingleTweetById1(list, newId);
     }
@@ -323,36 +257,25 @@ public class TweetFacade {
         if ((tweet.getParentTweet() != null) && (tweet.getParentTweet().getUser().getId() == userId)) {
             tweetId = getHeadBranch(tweet.getParentTweet().getId());
         }
-
         return tweetId;
     }
 
     private DtoTweet transListTweetInDto1(List<Tweet> list, DtoTweet dto, int size, Long profileId) {
         if (size == 0) ;
         else {
-            /*dto.setBranch(BranchType.BODYBRANCH);*/
+
             DtoTweet dtoNew = transEntityToDto(list.get(--size), profileId);
             dtoNew.setBranchDto(dto);
             dto = transListTweetInDto1(list, dtoNew, size, profileId);
+
         }
         return dto;
     }
 
     public DtoTweet transListTweetInDto(List<Tweet> list, Long profileId) {
-
         int sizelist = list.size();
-
         DtoTweet dto = transEntityToDto(list.get(--sizelist), profileId);
         dto = transListTweetInDto1(list, dto, sizelist, profileId);
-
-       /* if (sizelist == 0) dto.setBranch(BranchType.NOTBRANCH);
-        else dto.setBranch(BranchType.HEADBRANCH);*/
-
-       /* Long userid = list.get(0).getUser().getId();
-        if ((list.get(0).getParentTweet() != null) &&
-                (list.get(0).getParentTweet().getUser().getId() == userid))
-            dto.setBranch(BranchType.BODYBRANCH);*/
-
         return dto;
     }
 
@@ -376,25 +299,6 @@ public class TweetFacade {
         return parentTweetId;
     }
 
-    /*public List<UserDto> searchByUser(String searchRequest) {
-        String[] listS = searchRequest.split(" ");
-        Arrays.stream(listS).forEach(s -> log.info(":::::s=" + s + "!"));
-        int i = searchRequest.indexOf(" ");
-        String startWord = searchRequest.substring(0, i);
-        log.info("::::::::: startWord = " + startWord);
-        List<User> listUser = serviceUser.searchByUser(searchRequest);
-
-
-
-        return null;
-    }*/
-   /* private void saveTweetBodyToTweetWord(String tweetBody, Tweet tweet) {
-        Arrays.stream(tweetBody.split(" ")).
-                filter(x -> !x.equals("")).
-                filter(x -> !serviceTweetWord.existWord(x)).
-                forEach(s -> serviceTweetWord.saveTweetWord(new TweetWord(s).getListTweet().add(tweet)));
-    }*/
-
 
     private String newStringLeft(String s) {
         if (s.length() == 0) return s;
@@ -415,7 +319,6 @@ public class TweetFacade {
             s = newStringRight(s, position);
         }
         return s;
-
     }
 
     private String newString(String s) {
@@ -457,9 +360,7 @@ public class TweetFacade {
                 filter(x -> !x.equals("")).
                 collect(Collectors.toList());
 
-
         List<Tweet> listTweet = service.getTweetByWord(listWord.get(0));
-
 
         return resultSearch(listWord, 0, listTweet).stream().
                 map(t -> transEntityToDto(t, profileId, 0)).

@@ -26,7 +26,7 @@ public class FacadeGeneralChat {
         return service.existsChatInGeneralChat(chatId, generalChatId);
     }
 public GeneralChat newGenegarChat(Long chatId, Long profileId){
-//        Long userReceiver = serviceUser.getUserReceiverFromChat(chatId).get(0).getId();
+
         addChatToChatList(chatId, serviceUser.getUserReceiverFromChat(chatId).get(0).getId());
         return addChatToChatList(chatId, profileId);
 }
@@ -35,39 +35,20 @@ public GeneralChat newGenegarChat(Long chatId, Long profileId){
         if (service.existsByUserId(profileID)) {
 
             listChat = service.getListChatByUserId(profileID).get(0);
-
-//            boolean b = existsChatInGeneralChat(chatId, listChat.getId());
-
             if (!existsChatInGeneralChat(chatId, listChat.getId())) {
 
                 ChatNew chat = serviceChatNew.getById(chatId).get();
-
                 listChat.getListChat().add(chat);
-
                 service.saveOne(listChat);
 
             }
-            /*Chat chat = serviceChatNew.getById(chatId).get();
-            listChat.getListChat().add(chat);
-            service.saveOne(listChat);*/
-            log.info("::::::: end");
 
         } else {
-            log.info(":::::: start2");
+
             listChat = new GeneralChat(profileID);
-            log.info(":::::: listChat = " + listChat.toString());
             GeneralChat listChat1 = service.saveOne(listChat);
-            log.info("::::::: save ok");
-
-            log.info(":::::: listChat = " + listChat1.toString());
-
             ChatNew chat = serviceChatNew.getById(chatId).get();
-            log.info("::::::: chat = " + chat.getId());
-            /*List<ListChat> listlistChat = new ArrayList<>();
-            chat.setListListChat(listlistChat);*/
             chat.getListGeneralChat().add(listChat1);
-            log.info("::::::: chat = " + chat.getListGeneralChat().size());
-
             chat = serviceChatNew.saveOne(chat);
             listChat.getListChat().add(chat);
             service.saveOne(listChat);
